@@ -4,7 +4,7 @@ import Confetti from "react-confetti";
 import { Button } from "@/components/ui/button";
 
 /* ======================
-   Floating Hearts (BOTTOM → TOP)
+   Floating Hearts
    ====================== */
 function FloatingHearts() {
   const hearts = Array.from({ length: 18 });
@@ -42,6 +42,37 @@ function FloatingHearts() {
 }
 
 export default function ValentineApp() {
+
+  /* ======================
+     KEYWORD SETTINGS
+     ====================== */
+  const correctKeyword = "aug 30"; // change this
+
+  const [inputValue, setInputValue] = useState("");
+  const [wrongCount, setWrongCount] = useState(0);
+  const [shake, setShake] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+
+  /* ======================
+     FLOW CONTROL
+     ====================== */
+  const [step, setStep] = useState(0);
+  const [sealed, setSealed] = useState(false);
+  const [typingDone, setTypingDone] = useState(false);
+
+  const noTexts = [
+    "NO 🙈",
+    "pudi papom😜",
+    "achooo pavame😏",
+    "vaipilla raja 😆",
+    "po di en tomatoeee😝",
+    "yes kudu di😤",
+  ];
+  const [noText, setNoText] = useState("NO 🙈");
+
+  /* ======================
+     LETTER TEXT
+     ====================== */
   const letterText = `My Dearest Love ❤️
 
 Maaa… ithu nammaloda 1st year Valentine’s Day 💖
@@ -67,18 +98,24 @@ Love you pondaatiii 😘
 Forever yours 💖
 — Your KD`;
 
-  const noTexts = [
-    "NO 🙈",
-    "Try again 😜",
-    "Missed 😏",
-    "Haha nope 😆",
-    "Catch me 😝",
-  ];
+  const finalText = `Indha photo-la irukura indha moment…
+adhu verum image illa maa — adhu namma story 💖
 
-  const [step, setStep] = useState(1);
-  const [sealed, setSealed] = useState(false);
-  const [typingDone, setTypingDone] = useState(false);
-  const [noText, setNoText] = useState("NO 🙈");
+Indha kai pidichu nikkura feel,
+unkita kedaikira comfort,
+evalo peru paathalum unaya maari yaarayum paathathu ila 
+unoda kannu athuve pothum evalo kastam vanthalum cross panidalam
+ellame naan un kooda vaazha aasai padra antha oru life kaaga kasta padalam ma kandipa 🥹
+
+Un kai pidichu nadakkanum,
+un kooda senthu sirikkanum,
+un kooda neraya sanda podanum,
+un kooda life la settle aaganum ma...
+
+Indha oru vaati illa maa — lifetime full-aa 💍💖
+
+Forever & always,
+R ❤️ S`;
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 to-rose-200 flex items-center justify-center px-4">
@@ -87,7 +124,97 @@ Forever yours 💖
 
       <AnimatePresence mode="wait">
 
-        {/* STEP 1 – ENVELOPE (BOUNCE + UPSIDE-DOWN FLAP) */}
+        {/* ======================
+           STEP 0 – KEYWORD PAGE
+           ====================== */}
+        {step === 0 && (
+          <motion.div
+            key="keyword"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-md z-10"
+          >
+            <h2 className="text-2xl font-bold text-rose-600 mb-2">
+              Unaya epa first time thookune clg la? 😁
+            </h2>
+
+            <p className="text-sm text-gray-500 mb-6">
+              Hint: Unoda birth month avalo tha soluven😅
+            </p>
+
+            <motion.input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              animate={shake ? { x: [-10, 10, -8, 8, 0] } : {}}
+              transition={{ duration: 0.4 }}
+              className="border border-rose-300 px-4 py-2 rounded-lg w-full mb-4 text-center"
+              placeholder="crct ta soliduvingala madam ?😝"
+            />
+
+            {!isCorrect && (
+              <Button
+                onClick={() => {
+                  if (
+                    inputValue.trim().toLowerCase() ===
+                    correctKeyword.toLowerCase()
+                  ) {
+                    setIsCorrect(true);
+                  } else {
+                    setWrongCount((prev) => prev + 1);
+                    setShake(true);
+                    setTimeout(() => setShake(false), 400);
+                  }
+                }}
+              >
+                Check 💌
+              </Button>
+            )}
+
+            {!isCorrect && wrongCount > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-6 font-semibold"
+              >
+                {wrongCount <= 5 ? (
+                  <p className="text-rose-500">{wrongCount} Hug Pending {"🤗".repeat(wrongCount)}
+                  </p>
+                  ) : (
+                    <motion.p
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    className="text-red-500 text-lg"
+                    >
+                      LONG HUG REQUIRED 🤗💞
+                      </motion.p>
+                      )}
+                      </motion.div>
+                      )}
+              
+
+            {isCorrect && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="mt-6"
+              >
+                <p className="text-green-600 font-semibold mb-4">
+                  Paravala… correct-a solita 😌💖
+                </p>
+
+                <Button onClick={() => setStep(1)}>
+                  Open Envelope 💌
+                </Button>
+              </motion.div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ======================
+           STEP 1 – ENVELOPE
+           ====================== */}
         {step === 1 && (
           <motion.div
             key="envelope"
@@ -95,7 +222,7 @@ Forever yours 💖
             animate={{
               scale: 1,
               opacity: 1,
-              y: [0, -8, 0], // bounce effect
+              y: [0, -8, 0],
             }}
             transition={{
               duration: 1.6,
@@ -107,7 +234,6 @@ Forever yours 💖
           >
             <div className="relative w-72 h-44 bg-white rounded-xl shadow-xl overflow-hidden flex items-center justify-center">
 
-              {/* UPSIDE-DOWN TRIANGLE FLAP */}
               <div
                 className="absolute top-0 left-0 w-0 h-0
                 border-l-[144px] border-r-[144px] border-t-[90px]
@@ -165,10 +291,7 @@ Forever yours 💖
               My Dearest Love ❤️
             </h1>
 
-            <TypingByWords
-              text={letterText}
-              onDone={() => setTypingDone(true)}
-            />
+            <TypingByWords text={letterText} onDone={() => setTypingDone(true)} />
 
             <div className="mt-10 text-center">
               <Button
@@ -184,7 +307,7 @@ Forever yours 💖
           </motion.div>
         )}
 
-        {/* STEP 4 – FINAL (EMOTIONAL) */}
+        {/* STEP 4 – FINAL */}
         {step === 4 && (
           <motion.div
             key="final"
@@ -194,41 +317,19 @@ Forever yours 💖
           >
             <div className="flex flex-col md:flex-row gap-10 items-center">
               <div className="flex-1">
-                <h2 className="text-4xl font-bold text-rose-600 mb-4">
+                <h2 className="text-4xl font-bold text-rose-600 mb-6">
                   Agreement Sealed ❤️
                 </h2>
 
-                <p className="text-lg text-gray-700 leading-relaxed">
-                  Indha photo-la irukura indha moment…  
-                  adhu oru image illa maa — adhu namma story 💖  
-                  <br /><br />
-                  Indha kai pidichu nikkura feel,  
-                  indha pakkathula irukura comfort,  
-                  indha silence-la irukura love…  
-                  ellame naan un kooda vaazha aasai padra life 🥹  
-                  <br /><br />
-                  Evalo naal pogattum, evalo maasam pogattum,  
-                  indha photo maari naanum un pakkathula dhaan irukkanum 🫶  
-                  <br /><br />
-                  Un kai pidichu nadakka,  
-                  un kooda sirikka,  
-                  un kooda sanda poda,  
-                  un kooda settle aaga…  
-                  <br /><br />
-                  <b>Indha oru vaati illa maa — lifetime full-aa.</b> 💍💖  
-                  <br /><br />
-                  Forever & always,  
-                  <b>R ❤️ S</b>
-                </p>
+                <TypingByWords text={finalText} />
               </div>
 
-              {/* POLAROID PHOTO */}
               <div className="flex-1 flex justify-center">
                 <div className="bg-white p-4 pb-8 rounded-xl shadow-2xl rotate-[-2deg]">
                   <img
                     src="/couple-photo.jpg"
                     alt="Our Love"
-                    className="w-72 h-72 object-cover rounded-md"
+                    className="w-80 h-80 object-cover rounded-md"
                   />
                   <p className="mt-4 text-center font-semibold font-serif">
                     R ❤️ S
@@ -245,7 +346,7 @@ Forever yours 💖
 }
 
 /* =========================
-   Typing (UNCHANGED)
+   Typing Component
    ========================= */
 function TypingByWords({ text, onDone }) {
   const words = text.split(" ");
