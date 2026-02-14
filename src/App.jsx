@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 /* ======================
    Floating Hearts
-   ====================== */
+====================== */
 function FloatingHearts() {
   const hearts = Array.from({ length: 18 });
   const height = window.innerHeight;
@@ -43,24 +43,18 @@ function FloatingHearts() {
 
 export default function ValentineApp() {
 
-  /* ======================
-     KEYWORD SETTINGS
-     ====================== */
-  const correctKeyword = "aug 30"; // change this
+  const correctKeyword = "aug 30";
 
   const [inputValue, setInputValue] = useState("");
   const [wrongCount, setWrongCount] = useState(0);
   const [shake, setShake] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
-  /* ======================
-     FLOW CONTROL
-     ====================== */
   const [step, setStep] = useState(0);
   const [sealed, setSealed] = useState(false);
   const [typingDone, setTypingDone] = useState(false);
 
-  const noTexts = [
+    const noTexts = [
     "NO 🙈",
     "pudi papom😜",
     "achooo pavame😏",
@@ -68,14 +62,40 @@ export default function ValentineApp() {
     "po di en tomatoeee😝",
     "yes kudu di😤",
   ];
+
   const [noText, setNoText] = useState("NO 🙈");
 
-  /* ======================
-     LETTER TEXT
-     ====================== */
-  const letterText = `My Dearest Love ❤️
 
-Maaa… ithu nammaloda 1st year Valentine’s Day 💖
+  /* ✅ NEW MEMORY FLOW STATES */
+  const [memoryPage, setMemoryPage] = useState(false);
+  const [memoryIndex, setMemoryIndex] = useState(0);
+  const [showGrid, setShowGrid] = useState(false);
+
+  const memoryImages = [
+    "/img1.jpg","/img2.jpg","/img3.jpg","/img4.jpg","/img5.jpg",
+    "/img6.jpg","/img7.jpg","/img8.jpg","/img9.jpg","/img10.jpg",
+  ];
+
+  /* ✅ ONE BY ONE IMAGE FLOW */
+  useEffect(() => {
+    if (memoryPage && !showGrid) {
+      const interval = setInterval(() => {
+        setMemoryIndex((prev) => {
+          if (prev < memoryImages.length - 1) {
+            return prev + 1;
+          } else {
+            clearInterval(interval);
+            setTimeout(() => setShowGrid(true), 3500);
+            return prev;
+          }
+        });
+      }, 4500);
+      return () => clearInterval(interval);
+    }
+  }, [memoryPage, showGrid]);
+
+  const letterText = `My Dearest Love ❤️ 
+  Maaa… ithu nammaloda 1st year Valentine’s Day 💖
 Pona vaati na unakku ring kuduthen 💍
 Intha year konjam different-aa pannanum nu yosichen…
 Athaan intha small surprise 🥹
@@ -97,8 +117,7 @@ Love you pondaatiii 😘
 
 Forever yours 💖
 — Your KD`;
-
-  const finalText = `Indha photo-la irukura indha moment…
+  const finalText = `Indha photo-la irukura indha moment… 
 adhu verum image illa maa — adhu namma story 💖
 
 Indha kai pidichu nikkura feel,
@@ -115,7 +134,68 @@ un kooda life la settle aaganum ma...
 Indha oru vaati illa maa — lifetime full-aa 💍💖
 
 Forever & always,
+
 R ❤️ S`;
+
+  /* ======================
+     🎬 MEMORY FULL PAGE
+  ====================== */
+  if (memoryPage) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
+
+        {/* 🔊 Background Song (NO CONTROLS) */}
+        <audio autoPlay loop>
+          <source src="/kadhaipoma.mp3" type="audio/mpeg" />
+        </audio>
+
+        {!showGrid && (
+          <motion.img
+            key={memoryIndex}
+            src={memoryImages[memoryIndex]}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="w-96 h-96 object-cover rounded-2xl shadow-2xl"
+          />
+        )}
+
+        {showGrid && (
+          <>
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="text-5xl font-extrabold tracking-wide bg-gradient-to-r from-pink-400 to-rose-600 bg-clip-text text-transparent mb-8 text-center"
+          >
+           💘Kadhaipomaa...💘
+          </motion.h1>
+          <div className="grid grid-cols-5 gap-4 mt-6">
+              {memoryImages.slice(0,5).map((img,i)=>(
+                <img key={i} src={img} className="w-28 h-28 object-cover rounded-lg"/>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-5 gap-4 mt-4">
+              {memoryImages.slice(5,10).map((img,i)=>(
+                <img key={i} src={img} className="w-28 h-28 object-cover rounded-lg"/>
+              ))}
+            </div>
+
+            <p className="mt-10 text-lg text-center max-w-2xl">
+              Ithu elameee namaku pudicha time la happy ya iruntha pothu edutha photos❤️
+              namba photos edukum pothu unaya na papen la apa neeyum pakum pothuuu oru maarii unakeee pathathu sirikirathuku vaai la avalo siripa💕
+              atha paakum pothu enakumee happy ya irukum ipadiye pathukanum ivalanu thonum
+              ethunalum face pannalam ma pathukalam 
+              epayum na unkudave irupen thangomm 
+              love you maa🫂❤️😘
+            </p>
+          </>
+        )}
+
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 to-rose-200 flex items-center justify-center px-4">
@@ -123,6 +203,8 @@ R ❤️ S`;
       {sealed && <Confetti numberOfPieces={180} gravity={0.25} />}
 
       <AnimatePresence mode="wait">
+
+        {/* STEP 0,1,2,3 EXACTLY SAME AS YOUR CODE */}
 
         {/* ======================
            STEP 0 – KEYWORD PAGE
@@ -307,7 +389,6 @@ R ❤️ S`;
           </motion.div>
         )}
 
-        {/* STEP 4 – FINAL */}
         {step === 4 && (
           <motion.div
             key="final"
@@ -337,6 +418,17 @@ R ❤️ S`;
                 </div>
               </div>
             </div>
+
+            {/* ✅ ONE LAST SURPRISE BUTTON */}
+            <div className="mt-10 text-center">
+              <button
+                onClick={() => setMemoryPage(true)}
+                className="text-rose-600 font-semibold underline text-lg"
+              >
+                One Last Surprise… ❤️
+              </button>
+            </div>
+
           </motion.div>
         )}
 
@@ -345,9 +437,7 @@ R ❤️ S`;
   );
 }
 
-/* =========================
-   Typing Component
-   ========================= */
+/* Typing Component SAME */
 function TypingByWords({ text, onDone }) {
   const words = text.split(" ");
   const [displayed, setDisplayed] = useState("");
